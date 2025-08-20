@@ -41,6 +41,13 @@ public class GrandExchangeFlipperScript extends Script
     private long profit = 0;
     private long startTime;
     private GrandExchangeFlipperPanel panel;
+    private String status = "Idle";
+
+    private void setStatus(String status)
+    {
+        this.status = status;
+        Microbot.status = status;
+    }
 
     private void buildItemLists()
     {
@@ -85,30 +92,36 @@ public class GrandExchangeFlipperScript extends Script
         Microbot.getClientThread().invoke(this::buildItemLists);
         Rs2AntibanSettings.naturalMouse = true;
         Rs2Antiban.setActivityIntensity(ActivityIntensity.VERY_LOW);
+        setStatus("Starting");
         mainScheduledFuture = scheduledExecutorService.scheduleWithFixedDelay(() ->
         {
             try
             {
                 if (!Microbot.isLoggedIn())
                 {
+                    setStatus("Logged out");
                     return;
                 }
                 if (BreakHandlerScript.breakIn > 0 && BreakHandlerScript.breakIn <= 60)
                 {
+                    setStatus("Preparing for break");
                     Rs2GrandExchange.closeExchange();
                     return;
                 }
                 if (Rs2GrandExchange.hasFinishedBuyingOffers() || Rs2GrandExchange.hasFinishedSellingOffers())
                 {
+                    setStatus("Collecting offers");
                     Rs2GrandExchange.collectAllToInventory();
                 }
                 if (!Rs2GrandExchange.isOpen())
                 {
+                    setStatus("Opening GE");
                     Rs2GrandExchange.openExchange();
                     return;
                 }
 
                 int maxSlots = Rs2Player.isMember() ? 8 : 3;
+                setStatus("Managing offers");
                 for (int i = 0; i < maxSlots; i++)
                 {
                     GrandExchangeOffer offer = Microbot.getClient().getGrandExchangeOffers()[i];
@@ -142,6 +155,7 @@ public class GrandExchangeFlipperScript extends Script
 
     private void handleEmptySlot(int slot)
     {
+        setStatus("Placing buy offer");
         List<Integer> pool = new ArrayList<>(f2pItems);
         if (Rs2Player.isMember())
         {
@@ -191,6 +205,7 @@ public class GrandExchangeFlipperScript extends Script
 
     private void handleBoughtSlot(int slot)
     {
+        setStatus("Selling items");
         Integer itemId = slotItem.get(slot);
         if (itemId == null)
         {
@@ -214,6 +229,7 @@ public class GrandExchangeFlipperScript extends Script
 
     private void handleSoldSlot(int slot)
     {
+        setStatus("Collecting profits");
         Integer itemId = slotItem.get(slot);
         if (itemId == null)
         {
@@ -253,5 +269,10 @@ public class GrandExchangeFlipperScript extends Script
             return Duration.ZERO;
         }
         return Duration.ofMillis(System.currentTimeMillis() - startTime);
+    }
+
+    public String getStatus()
+    {
+        return status;
     }
 }

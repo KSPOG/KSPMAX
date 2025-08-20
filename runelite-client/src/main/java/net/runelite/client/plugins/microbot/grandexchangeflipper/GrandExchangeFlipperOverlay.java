@@ -36,6 +36,10 @@ public class GrandExchangeFlipperOverlay extends OverlayPanel
                 .right(String.valueOf(script.getProfit()))
                 .build());
         panelComponent.getChildren().add(LineComponent.builder()
+                .left("Status:")
+                .right(script.getStatus())
+                .build());
+        panelComponent.getChildren().add(LineComponent.builder()
                 .left("Run Time:")
                 .right(format(script.getRuntime()))
                 .build());
