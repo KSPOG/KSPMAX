@@ -189,6 +189,7 @@ public class GrandExchangeFlipperScript extends Script
                     int volume = Rs2GrandExchange.getBuyingVolume(itemId);
                     price = buy > 0 && sell > 0 ? new WikiPrice(buy, sell, volume) : null;
                 }
+
                 else
                 {
                     int buy = Rs2GrandExchange.getPrice(itemId);
