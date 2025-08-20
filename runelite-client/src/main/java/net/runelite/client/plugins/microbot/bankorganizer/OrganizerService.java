@@ -325,6 +325,15 @@ public class OrganizerService {
             String k = unquote(p.substring(0, idx).trim());
             String v = unquote(p.substring(idx + 1).trim());
             out.put(k, v);
+
+        String[] pairs=inner.split(",(?=(?:[^\\"]*\\"[^\\"]*\\")*[^\\"]*$)");
+        for(String pair:pairs){
+            String p=pair.trim(); if(p.isEmpty()) continue;
+            int idx=p.indexOf(":"); if(idx<0) continue;
+            String k=unquote(p.substring(0,idx).trim());
+            String v=unquote(p.substring(idx+1).trim());
+            out.put(k,v);
+
         }
         return out;
     }
