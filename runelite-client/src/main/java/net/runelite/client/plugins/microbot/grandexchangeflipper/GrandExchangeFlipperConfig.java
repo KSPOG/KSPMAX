@@ -20,3 +20,15 @@ public interface GrandExchangeFlipperConfig extends Config
     }
 }
 
+
+            return PriceSource.DEFAULT;
+    }
+
+    enum PriceSource
+    {
+            DEFAULT,
+            OSRS_WIKI,
+            GE_TRACKER
+    }
+}
+

@@ -183,12 +183,20 @@ public class GrandExchangeFlipperScript extends Script
                     price = Rs2GrandExchange.getRealTimePrices(itemId);
                 }
                 else if (config.priceSource() == PriceSource.GE_TRACKER)
+
+                if (config.priceSource() == GrandExchangeFlipperConfig.PriceSource.OSRS_WIKI)
+                {
+                    price = Rs2GrandExchange.getRealTimePrices(itemId);
+                }
+                else if (config.priceSource() == GrandExchangeFlipperConfig.PriceSource.GE_TRACKER)
+
                 {
                     int buy = Rs2GrandExchange.getPrice(itemId);
                     int sell = Rs2GrandExchange.getSellPrice(itemId);
                     int volume = Rs2GrandExchange.getBuyingVolume(itemId);
                     price = buy > 0 && sell > 0 ? new WikiPrice(buy, sell, volume) : null;
                 }
+
                 else
                 {
                     int buy = Rs2GrandExchange.getPrice(itemId);
