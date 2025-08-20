@@ -287,6 +287,20 @@ public class OrganizerService {
 
     // Minimal JSON helpers (Map<String,String>)
     private static String toJson(Map<String,String> map) {
+
+        String newline = System.lineSeparator();
+        StringBuilder sb = new StringBuilder();
+        sb.append('{').append(newline);
+        boolean first = true;
+        for (Map.Entry<String, String> e : map.entrySet()) {
+            if (!first) {
+                sb.append(',').append(newline);
+            }
+            first = false;
+            sb.append("  ").append(quote(e.getKey())).append(": ").append(quote(e.getValue()));
+        }
+        sb.append(newline).append('}');
+
         StringBuilder sb=new StringBuilder();
         sb.append("{\n");
         boolean first=true;
@@ -296,6 +310,7 @@ public class OrganizerService {
             sb.append("  ").append(quote(e.getKey())).append(": ").append(quote(e.getValue()));
         }
         sb.append("\n}");
+
         return sb.toString();
     }
     private static Map<String,String> fromJson(String json) {
@@ -326,6 +341,7 @@ public class OrganizerService {
             String v = unquote(p.substring(idx + 1).trim());
             out.put(k, v);
 
+
         String[] pairs=inner.split(",(?=(?:[^\\"]*\\"[^\\"]*\\")*[^\\"]*$)");
         for(String pair:pairs){
             String p=pair.trim(); if(p.isEmpty()) continue;
@@ -333,6 +349,7 @@ public class OrganizerService {
             String k=unquote(p.substring(0,idx).trim());
             String v=unquote(p.substring(idx+1).trim());
             out.put(k,v);
+
 
         }
         return out;
