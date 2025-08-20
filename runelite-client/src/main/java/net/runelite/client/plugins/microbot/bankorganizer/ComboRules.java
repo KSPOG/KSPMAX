@@ -81,8 +81,15 @@ final class ComboRules {
 
     private static Set<Integer> allIds(ItemManager itemManager) {
         Set<Integer> set = new LinkedHashSet<>();
-        int limit = Math.max(30000, itemManager.getItemCount());
-        for (int id = 0; id < limit; id++) { try { itemManager.getItemComposition(id); set.add(id); } catch (Exception ignored) { } }
+        final int limit = 30_000; // approximate max item ID; RuneLite API lacks a count method
+        for (int id = 0; id < limit; id++) {
+            try {
+                itemManager.getItemComposition(id);
+                set.add(id);
+            }
+            catch (Exception ignored) {
+            }
+        }
         return set;
     }
 
