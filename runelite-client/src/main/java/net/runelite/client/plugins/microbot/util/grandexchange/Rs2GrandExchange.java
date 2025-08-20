@@ -65,9 +65,9 @@ public class Rs2GrandExchange
 	private static final String GE_TRACKER_API_URL = "https://www.ge-tracker.com/api/items/";
 	
 	// Wiki API for real-time prices (Alternative source)
-	private static final String WIKI_API_URL = "https://prices.runescape.wiki/api/v1/osrs/latest?id=";
-	private static final String WIKI_TIMESERIES_URL = "https://prices.runescape.wiki/api/v1/osrs/timeseries";
-	private static final String WIKI_MAPPING_URL = "https://prices.runescape.wiki/api/v1/osrs/mapping";
+        private static final String WIKI_API_URL = "https://oldschool.runescape.wiki/api/v1/osrs/latest?id=";
+        private static final String WIKI_TIMESERIES_URL = "https://oldschool.runescape.wiki/api/v1/osrs/timeseries";
+        private static final String WIKI_MAPPING_URL = "https://oldschool.runescape.wiki/api/v1/osrs/mapping";
 	
 	// Caches for different data types
 	private static final Map<Integer, WikiPrice> priceCache = new HashMap<>();
