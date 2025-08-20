@@ -303,6 +303,29 @@ public class OrganizerService {
         String inner=json.trim();
         if(inner.startsWith("{")&&inner.endsWith("}")) inner=inner.substring(1, inner.length()-1);
         if(inner.trim().isEmpty()) return out;
+        java.util.List<String> pairs = new java.util.ArrayList<>();
+        boolean inStr = false;
+        StringBuilder cur = new StringBuilder();
+        for (int i = 0; i < inner.length(); i++) {
+            char c = inner.charAt(i);
+            if (c == '"') { inStr = !inStr; }
+            if (c == ',' && !inStr) {
+                pairs.add(cur.toString());
+                cur.setLength(0);
+            } else {
+                cur.append(c);
+            }
+        }
+        if (cur.length() > 0) pairs.add(cur.toString());
+        for (String pair : pairs) {
+            String p = pair.trim();
+            if (p.isEmpty()) continue;
+            int idx = p.indexOf(':');
+            if (idx < 0) continue;
+            String k = unquote(p.substring(0, idx).trim());
+            String v = unquote(p.substring(idx + 1).trim());
+            out.put(k, v);
+
         String[] pairs=inner.split(",(?=(?:[^\\"]*\\"[^\\"]*\\")*[^\\"]*$)");
         for(String pair:pairs){
             String p=pair.trim(); if(p.isEmpty()) continue;
@@ -310,6 +333,7 @@ public class OrganizerService {
             String k=unquote(p.substring(0,idx).trim());
             String v=unquote(p.substring(idx+1).trim());
             out.put(k,v);
+
         }
         return out;
     }
