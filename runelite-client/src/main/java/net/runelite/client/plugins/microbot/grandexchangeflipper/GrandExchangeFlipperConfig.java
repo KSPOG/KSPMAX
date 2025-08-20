@@ -15,6 +15,11 @@ public interface GrandExchangeFlipperConfig extends Config
     )
     default PriceSource priceSource()
     {
+        return PriceSource.DEFAULT;
+    }
+}
+
+
             return PriceSource.DEFAULT;
     }
 
@@ -25,3 +30,4 @@ public interface GrandExchangeFlipperConfig extends Config
             GE_TRACKER
     }
 }
+
