@@ -3,6 +3,7 @@ package net.runelite.client.plugins.microbot.grandexchangeflipper;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
+import net.runelite.client.plugins.microbot.grandexchangeflipper.PriceSource;
 
 @ConfigGroup("geflipper")
 public interface GrandExchangeFlipperConfig extends Config

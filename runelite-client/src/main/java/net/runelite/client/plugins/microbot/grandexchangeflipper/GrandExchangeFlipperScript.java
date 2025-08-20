@@ -183,6 +183,7 @@ public class GrandExchangeFlipperScript extends Script
                     price = Rs2GrandExchange.getRealTimePrices(itemId);
                 }
                 else if (config.priceSource() == PriceSource.GE_TRACKER)
+
                 if (config.priceSource() == GrandExchangeFlipperConfig.PriceSource.OSRS_WIKI)
                 {
                     price = Rs2GrandExchange.getRealTimePrices(itemId);
