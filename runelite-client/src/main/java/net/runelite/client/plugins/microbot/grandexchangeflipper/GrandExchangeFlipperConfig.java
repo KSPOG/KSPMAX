@@ -21,6 +21,7 @@ public interface GrandExchangeFlipperConfig extends Config
     enum PriceSource
     {
             DEFAULT,
-            OSRS_WIKI
+            OSRS_WIKI,
+            GE_TRACKER
     }
 }
