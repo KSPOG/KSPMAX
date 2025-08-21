@@ -9,12 +9,16 @@ import java.util.concurrent.ConcurrentHashMap;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ItemID;
 import net.runelite.client.plugins.microbot.Microbot;
+
 import net.runelite.client.plugins.microbot.Script;
 import net.runelite.client.plugins.microbot.breakhandler.BreakHandlerScript;
 import net.runelite.client.plugins.microbot.util.bank.Rs2Bank;
 import net.runelite.client.plugins.microbot.util.grandexchange.Rs2GrandExchange;
 import net.runelite.client.plugins.microbot.util.inventory.Rs2Inventory;
 import net.runelite.client.plugins.microbot.util.math.Rs2Random;
+
+import net.runelite.client.plugins.microbot.util.mouse.Rs2Mouse;
+
 
 @Slf4j
 public class KSPFlipScript extends Script
@@ -51,6 +55,13 @@ public class KSPFlipScript extends Script
                 {
                     status = "Preparing for break";
                     Rs2GrandExchange.closeExchange();
+
+                if (BreakHandlerScript.isBreakingSoon(60))
+                {
+                    status = "Preparing for break";
+                    Rs2GrandExchange.closeExchange();
+                    Rs2GrandExchange.close();
+
                     sleep(2000);
                     return;
                 }
@@ -121,6 +132,9 @@ public class KSPFlipScript extends Script
         for (int itemId : itemPool)
         {
             if (Rs2GrandExchange.getAvailableSlot() == null)
+
+            if (!Rs2GrandExchange.hasFreeSlot())
+
             {
                 break;
             }
@@ -134,6 +148,9 @@ public class KSPFlipScript extends Script
                 continue;
             }
 
+
+            Rs2Mouse.setSpeed(50, 90);
+
             Rs2GrandExchange.buyItem(itemId, quantity, buyPrice);
             sleepUntil(() -> Rs2GrandExchange.findSlotForItem(itemId, false) != null, 3000);
             lastFlipped.put(itemId, System.currentTimeMillis());
@@ -142,6 +159,16 @@ public class KSPFlipScript extends Script
         if (Rs2GrandExchange.hasFinishedBuyingOffers() || Rs2GrandExchange.hasFinishedSellingOffers())
         {
             collectProfit();
+
+            sleepUntil(() -> Rs2GrandExchange.hasOffer(itemId), 3000);
+            lastFlipped.put(itemId, System.currentTimeMillis());
+        }
+
+        if (Rs2GrandExchange.anyOfferFinished())
+        {
+            Rs2GrandExchange.collectToInventory();
+            calculateProfit();
+
         }
     }
 
@@ -157,6 +184,11 @@ public class KSPFlipScript extends Script
         Rs2GrandExchange.collectAllToInventory();
         int coinsAfter = Rs2Inventory.count(ItemID.COINS_995);
         long profit = coinsAfter - coinsBefore;
+
+    private void calculateProfit()
+    {
+        long profit = Rs2GrandExchange.getLastProfit();
+
         if (profit > 0)
         {
             totalProfit += profit;
