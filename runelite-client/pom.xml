@@ -619,5 +619,43 @@
 				</executions>
 			</plugin>
 		</plugins>
-	</build>
+        </build>
+
+        <profiles>
+                <profile>
+                        <id>standalone</id>
+                        <build>
+                                <plugins>
+                                        <plugin>
+                                                <groupId>org.apache.maven.plugins</groupId>
+                                                <artifactId>maven-assembly-plugin</artifactId>
+                                                <version>3.6.0</version>
+                                                <configuration>
+                                                        <finalName>${project.artifactId}-${project.version}-standalone</finalName>
+                                                        <archive>
+                                                                <manifest>
+                                                                        <mainClass>net.runelite.client.RuneLite</mainClass>
+                                                                </manifest>
+                                                        </archive>
+                                                        <descriptorRefs>
+                                                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                                                        </descriptorRefs>
+                                                </configuration>
+                                                <executions>
+                                                        <execution>
+                                                                <id>make-standalone</id>
+                                                                <phase>package</phase>
+                                                                <goals>
+                                                                        <goal>single</goal>
+                                                                </goals>
+                                                                <configuration>
+                                                                        <appendAssemblyId>false</appendAssemblyId>
+                                                                </configuration>
+                                                        </execution>
+                                                </executions>
+                                        </plugin>
+                                </plugins>
+                        </build>
+                </profile>
+        </profiles>
 </project>
