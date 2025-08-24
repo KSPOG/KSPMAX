@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+import lombok.extern.slf4j.Slf4j;
+import net.runelite.api.ItemID;
+import net.runelite.client.plugins.microbot.Microbot;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ItemID;
 import net.runelite.client.plugins.microbot.Microbot;
@@ -44,6 +48,16 @@ public class KSPFlipScript extends Script
         Microbot.enableAutoRunOn = true;
         startTime = Instant.now();
         mainScheduledFuture = scheduledExecutorService.scheduleWithFixedDelay(() -> {
+
+            try {
+                if (!super.run()) {
+                    return;
+                }
+
+                if (BreakHandlerScript.breakIn > 0 && BreakHandlerScript.breakIn < 60) {
+                    status = "Preparing for break";
+                    Rs2GrandExchange.closeExchange();
+
             try
             {
                 if (!super.run())
@@ -62,9 +76,16 @@ public class KSPFlipScript extends Script
                     Rs2GrandExchange.closeExchange();
                     Rs2GrandExchange.close();
 
+
                     sleep(2000);
                     return;
                 }
+
+                if (itemPool.isEmpty() || Rs2Random.betweenInclusive(0, 100) < 5) {
+                    refreshItemPool();
+                }
+
+                if (!Rs2Bank.isOpen() && Rs2Inventory.hasItem(ItemID.COINS_995)) {
 
                 if (itemPool.isEmpty() || Rs2Random.betweenInclusive(0, 100) < 5)
                 {
@@ -73,10 +94,18 @@ public class KSPFlipScript extends Script
 
                 if (!Rs2Bank.isOpen() && Rs2Inventory.hasItem(ItemID.COINS_995))
                 {
+
                     flipLoop();
                 }
 
                 overlay.updateOverlay(getProfit(), getStatus(), getRuntime());
+
+            } catch (Exception e) {
+                log.error("Error in flip loop", e);
+                status = "Error - retrying";
+            }
+        }, 0, 600, TimeUnit.MILLISECONDS);
+
             }
             catch (Exception e)
             {
@@ -84,6 +113,7 @@ public class KSPFlipScript extends Script
                 status = "Error - retrying";
             }
         }, 0, 600, java.util.concurrent.TimeUnit.MILLISECONDS);
+
         return true;
     }
 
@@ -133,7 +163,9 @@ public class KSPFlipScript extends Script
         {
             if (Rs2GrandExchange.getAvailableSlot() == null)
 
+
             if (!Rs2GrandExchange.hasFreeSlot())
+
 
             {
                 break;
@@ -149,6 +181,7 @@ public class KSPFlipScript extends Script
             }
 
 
+
             Rs2Mouse.setSpeed(50, 90);
 
             Rs2GrandExchange.buyItem(itemId, quantity, buyPrice);
@@ -160,6 +193,7 @@ public class KSPFlipScript extends Script
         {
             collectProfit();
 
+
             sleepUntil(() -> Rs2GrandExchange.hasOffer(itemId), 3000);
             lastFlipped.put(itemId, System.currentTimeMillis());
         }
@@ -168,6 +202,7 @@ public class KSPFlipScript extends Script
         {
             Rs2GrandExchange.collectToInventory();
             calculateProfit();
+
 
         }
     }
@@ -185,9 +220,11 @@ public class KSPFlipScript extends Script
         int coinsAfter = Rs2Inventory.count(ItemID.COINS_995);
         long profit = coinsAfter - coinsBefore;
 
+
     private void calculateProfit()
     {
         long profit = Rs2GrandExchange.getLastProfit();
+
 
         if (profit > 0)
         {
